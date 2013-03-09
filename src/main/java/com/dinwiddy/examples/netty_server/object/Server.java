@@ -38,6 +38,12 @@ public class Server {
 				return Channels.pipeline(
 						new ObjectEncoder(),
 						new ObjectDecoder(ClassResolvers.cacheDisabled(getClass().getClassLoader())),
+						
+						// I wanted to use these guys so that the client can use the standard Java input/output
+						// object streams. But the below encoders are buggy so I'm just gonna use Netty's
+						// native object encoder/decoders.
+						//new CompatibleObjectEncoder(),			// Instead of ObjectEncoder
+						//new CompatibleObjectDecoder(),			// Instead of ObjectDecoder
 						new ObjectServerHandler());
 			}
 		});

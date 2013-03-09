@@ -1,10 +1,9 @@
 package com.dinwiddy.examples.netty_server.object;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import org.jboss.netty.handler.codec.serialization.ObjectEncoderOutputStream;
 
 import com.dinwiddy.examples.netty_server.object.domain.ExampleMessage;
 
@@ -19,8 +18,7 @@ public class Client {
 	private Socket clientSocket;
 	private String host;
 	private int port;
-	private ObjectOutputStream objectOut;
-	private ObjectInputStream objectIn;			// Not actually used at the moment
+	private ObjectEncoderOutputStream objectOut;
 	private int messageCount = 0;				// Count of the messages we've sent
 
 	public Client(String host, int port) {
@@ -57,8 +55,16 @@ public class Client {
 
 		try {
 			clientSocket = new Socket(host, port);
-			objectOut = new ObjectOutputStream(clientSocket.getOutputStream());
-			objectIn = new ObjectInputStream(clientSocket.getInputStream());
+
+			// The server side has Netty and although Netty does have deprecated support for clients
+			// using standard java Object input/output streams, it has a bunch of bugs. So I'm just
+			// going to use Netty's native object encoder/decoder streams. They work just the same 
+			// way.
+			// objectOut = new ObjectOutputStream(clientSocket.getOutputStream());
+			// objectIn = new ObjectInputStream(clientSocket.getInputStream());
+
+			objectOut = new ObjectEncoderOutputStream(clientSocket.getOutputStream());
+			// objectIn = new ObjectDecoderInputStream(clientSocket.getInputStream());
 		} catch (UnknownHostException e) {
 			throw new RuntimeException("Unknown Host", e);
 		} catch (IOException e) {

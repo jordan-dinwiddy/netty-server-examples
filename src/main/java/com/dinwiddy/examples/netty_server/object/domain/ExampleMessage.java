@@ -1,6 +1,13 @@
 package com.dinwiddy.examples.netty_server.object.domain;
 
-public class ExampleMessage {
+import java.io.Serializable;
+
+public class ExampleMessage implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6550060355233260403L;
 
 	private String from; 
 	private String subject; 
@@ -23,5 +30,8 @@ public class ExampleMessage {
 	}
 	public void setMessage(String message) {
 		this.message = message;
-	} 
+	}
+	public String toString() {
+		return String.format("[Message from=%s, subject=%s]", from, subject);
+	}
 }

@@ -18,6 +18,22 @@ public class ObjectServerHandler extends SimpleChannelUpstreamHandler {
 
 		String clientHostStr = getClientHostStr(e);
 		System.out.printf("Client connected: %s\n", clientHostStr);
+		
+		// This guy is necessary when using Netty's compatible object encoder/decoders
+		// because the clients input/output streams don't seem to get fully established
+		// until some data has been sent by the server. But the welcome message
+		// isn't needed if using Netty's object codecs on both client/server.
+		//		ExampleMessage welcomeMsg = new ExampleMessage();
+		//		welcomeMsg.setFrom("Server");
+		//		welcomeMsg.setSubject("Welcome");
+		//		welcomeMsg.setMessage("Thanks for connecting");
+		//		ChannelFuture cf = e.getChannel().write(welcomeMsg);
+		//		cf.addListener(new ChannelFutureListener() {
+		//			
+		//			public void operationComplete(ChannelFuture future) throws Exception {
+		//				System.out.println("Welcome message sent to client");
+		//			}
+		//		});
 	}
 
 	@Override
