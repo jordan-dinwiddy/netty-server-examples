@@ -6,9 +6,13 @@ import java.util.concurrent.Executors;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Server {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
+	
 	private final int port;
 
 	public Server(int port) {
@@ -26,7 +30,7 @@ public class Server {
 		// Set up the pipeline factory.
 		bootstrap.setPipelineFactory(new BasicServerPipelineFactory());
 
-		System.out.printf("Binding to port %d...\n", port);
+		LOGGER.info("Binding to port {}...", port);
 		// Bind and start to accept incoming connections.
 		bootstrap.bind(new InetSocketAddress(port));
 

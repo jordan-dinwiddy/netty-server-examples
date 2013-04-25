@@ -6,18 +6,22 @@ import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.dinwiddy.examples.netty_server.object.domain.ExampleMessage;
 
 public class ObjectServerHandler extends SimpleChannelUpstreamHandler {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ObjectServerHandler.class);
+	
 	private int messageCount = 0; 
 
 	@Override
 	public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e)  {
 
 		String clientHostStr = getClientHostStr(e);
-		System.out.printf("Client connected: %s\n", clientHostStr);
+		LOGGER.info("Client connected: {}", clientHostStr);
 		
 		// This guy is necessary when using Netty's compatible object encoder/decoders
 		// because the clients input/output streams don't seem to get fully established
@@ -31,7 +35,7 @@ public class ObjectServerHandler extends SimpleChannelUpstreamHandler {
 		//		cf.addListener(new ChannelFutureListener() {
 		//			
 		//			public void operationComplete(ChannelFuture future) throws Exception {
-		//				System.out.println("Welcome message sent to client");
+		//				LOGGER.info("Welcome message sent to client");
 		//			}
 		//		});
 	}
@@ -40,7 +44,7 @@ public class ObjectServerHandler extends SimpleChannelUpstreamHandler {
 	public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e)  {
 
 		String clientHostStr = getClientHostStr(e);
-		System.out.printf("Client disconnected: %s\n", clientHostStr);
+		LOGGER.info("Client disconnected: {}", clientHostStr);
 	}
 
 	@Override
@@ -55,10 +59,10 @@ public class ObjectServerHandler extends SimpleChannelUpstreamHandler {
 		if(inObject instanceof ExampleMessage) {
 			ExampleMessage inMsg = (ExampleMessage) inObject; 
 			
-			System.out.printf("Message (#%d) from %s: from=%s, subject=%s, message=%s\n",  
-					messageCount, clientHostStr, inMsg.getFrom(), inMsg.getSubject(), inMsg.getMessage());
+			LOGGER.info("Message (#{}) from {}: from={}, subject={}, message={}",
+					new Object[] { messageCount, clientHostStr, inMsg.getFrom(), inMsg.getSubject(), inMsg.getMessage() });
 		} else {
-			System.out.printf("Message (#%d) from %s: Received invalid object instance, ignoring...\n",  messageCount, clientHostStr);
+			LOGGER.info("Message (#{}) from {}: Received invalid object instance, ignoring...",  messageCount, clientHostStr);
 		}
 	}
 

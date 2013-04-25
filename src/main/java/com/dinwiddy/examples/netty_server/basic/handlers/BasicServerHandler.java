@@ -9,23 +9,27 @@ import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BasicServerHandler extends SimpleChannelUpstreamHandler {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(BasicServerHandler.class);
+	
 	private int messageCount = 0; 
 
 	@Override
 	public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e)  {
 
 		String clientHostStr = getClientHostStr(e);
-		System.out.printf("Client connected: %s\n", clientHostStr);
+		LOGGER.info("Client connected: {}", clientHostStr);
 	}
 
 	@Override
 	public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e)  {
 
 		String clientHostStr = getClientHostStr(e);
-		System.out.printf("Client disconnected: %s\n", clientHostStr);
+		LOGGER.info("Client disconnected: {}", clientHostStr);
 	}
 
 	@Override
@@ -38,7 +42,7 @@ public class BasicServerHandler extends SimpleChannelUpstreamHandler {
 		ChannelBuffer cb = (ChannelBuffer) e.getMessage();
 		String msgStr = cb.toString(Charset.forName("UTF-8"));
 
-		System.out.printf("Message (#%d) from %s: %s\n", messageCount, clientHostStr, msgStr.trim());
+		LOGGER.info("Message (#{}) from {}: {}", messageCount, clientHostStr, msgStr.trim());
 	}
 
 	private String getClientHostStr(ChannelEvent e) {

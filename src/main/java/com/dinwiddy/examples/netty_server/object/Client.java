@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import org.jboss.netty.handler.codec.serialization.ObjectEncoderOutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.dinwiddy.examples.netty_server.object.domain.ExampleMessage;
 
@@ -13,7 +15,9 @@ import com.dinwiddy.examples.netty_server.object.domain.ExampleMessage;
  * 
  */
 public class Client {
-
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(Client.class);
+	
 	private static final long THREAD_SLEEP_TIME = 5000;
 	private Socket clientSocket;
 	private String host;
@@ -34,7 +38,7 @@ public class Client {
 			messageCount++;
 
 			try {
-				System.out.printf("Sending test message... ");
+				LOGGER.info("Sending test message... ");
 
 				ExampleMessage msg = new ExampleMessage();
 				msg.setFrom("testClient");
@@ -42,7 +46,7 @@ public class Client {
 				msg.setMessage("This is the message body");
 
 				objectOut.writeObject(msg);
-				System.out.printf("DONE, sleeping for %d ms\n", THREAD_SLEEP_TIME);
+				LOGGER.info("DONE, sleeping for {} ms", THREAD_SLEEP_TIME);
 			} catch (IOException e) {
 				throw new RuntimeException("Failed to send message " + messageCount);
 			}
@@ -87,8 +91,8 @@ public class Client {
 		int serverPort;
 
 		if(args.length != 2) {
-			System.out.println("Missing host and port params");
-			System.out.println("Assuming defaults of localhost:8088");
+			LOGGER.info("Missing host and port params");
+			LOGGER.info("Assuming defaults of localhost:8088");
 			serverHost = "localhost";
 			serverPort = 8080;
 		} else {
@@ -96,11 +100,11 @@ public class Client {
 			serverPort = Integer.parseInt(args[1]);
 		}
 
-		System.out.printf("Creating new client connection to %s:%d...\n", serverHost, serverPort);
+		LOGGER.info("Creating new client connection to {}:{}...", serverHost, serverPort);
 		Client c = new Client(serverHost, serverPort); 
 		c.connect();
 
-		System.out.println("Running client demo...");
+		LOGGER.info("Running client demo...");
 		c.run();
 	}
 }

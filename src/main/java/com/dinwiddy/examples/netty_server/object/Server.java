@@ -11,17 +11,21 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.jboss.netty.handler.codec.serialization.ClassResolvers;
 import org.jboss.netty.handler.codec.serialization.ObjectDecoder;
 import org.jboss.netty.handler.codec.serialization.ObjectEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.dinwiddy.examples.netty_server.object.handlers.ObjectServerHandler;
 
 public class Server {
-
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(Server.class); 
+	
 	private final int port;
-
+	
 	public Server(int port) {
 		this.port = port;
 	}
-
+	
 	public void run() {
 		// Configure the server.
 		ServerBootstrap bootstrap = new ServerBootstrap(
@@ -48,7 +52,7 @@ public class Server {
 			}
 		});
 
-		System.out.printf("Binding to port %d...\n", port);
+		LOGGER.info("Binding to port {}...", port);
 		// Bind and start to accept incoming connections.
 		bootstrap.bind(new InetSocketAddress(port));
 
